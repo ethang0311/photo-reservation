@@ -1,0 +1,153 @@
+<!-- create.html -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Create Reservation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <script>
+    window.addEventListener("load", () => {
+      btn.addEventListener("click", sendData)
+      photoCount.addEventListener("change", updatePrice)
+      locationCount.addEventListener("change", () => {
+        updateLocationInputs()
+        updatePrice()
+      })
+      updateLocationInputs()
+      updatePrice()
+    })
+
+    function updatePrice() {
+      const count = parseInt(photoCount.value)
+      const locCount = parseInt(locationCount.value)
+
+      let price = 0
+      if (count === 10) price = 100
+      else if (count === 25) price = 200
+      else if (count === 40) price = 275
+
+      if (locCount >= 2) price += 20
+      if (locCount === 3) price += 15
+
+      estimatedPrice.value = price.toFixed(2)
+    }
+
+    function updateLocationInputs() {
+      const count = parseInt(locationCount.value)
+
+      location1.disabled = count < 1
+      location2.disabled = count < 2
+      location3.disabled = count < 3
+
+      if (count < 1) location1.value = ""
+      if (count < 2) location2.value = ""
+      if (count < 3) location3.value = ""
+    }
+
+    async function sendData() {
+      statusBox.textContent = ""
+
+      const emailVal = email.value.trim()
+
+      const data = {
+        name          : nameInput.value.trim(),
+        phone         : phone.value.trim(),
+        email         : emailVal,
+        photoCount    : parseInt(photoCount.value),
+        locationCount : parseInt(locationCount.value),
+        location1     : location1.value.trim(),
+        location2     : location2.value.trim(),
+        location3     : location3.value.trim(),
+        date          : date.value,
+        estimatedPrice: parseFloat(estimatedPrice.value)
+      }
+
+      try {
+        const resp = await fetch("/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        })
+
+        if (!resp.ok) {
+          const msg = await resp.text()
+          throw new Error(`Server error ${resp.status}: ${msg}`)
+        }
+
+        location.href = "retrieve.html"
+      } catch (err) {
+        console.error(err)
+        statusBox.textContent = "Failed to create reservation. Check console for details."
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="myH1">Create Photography Reservation</h1>
+
+  <!-- NAV BUTTONS -->
+  <div class="myDivWhite" style="text-align:center;">
+    <a href="/">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Home</button>
+    </a>
+    <a href="create.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button>
+    </a>
+    <a href="retrieve.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button>
+    </a>
+    <a href="update.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button>
+    </a>
+    <a href="delete.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button>
+    </a>
+  </div>
+
+  <div class="myDivWhite">
+    <p class="myP">Name: <input id="nameInput" class="myInput"></p>
+    <p class="myP">Phone Number: <input id="phone" class="myInput"></p>
+    <p class="myP">Email: <input id="email" type="email" class="myInput"></p>
+
+    <p class="myP">
+      How Many Photos:
+      <select id="photoCount" class="myInput">
+        <option value="10">10 Photos ($100)</option>
+        <option value="25">25 Photos ($200)</option>
+        <option value="40">40 Photos ($275)</option>
+      </select>
+    </p>
+
+    <p class="myP">
+      Number of Locations:
+      <select id="locationCount" class="myInput">
+        <option value="1">1 Location</option>
+        <option value="2">2 Locations (+$20)</option>
+        <option value="3">3 Locations (+$35)</option>
+      </select>
+    </p>
+
+    <p class="myP">Location 1: <input id="location1" class="myInput"></p>
+    <p class="myP">Location 2: <input id="location2" class="myInput"></p>
+    <p class="myP">Location 3: <input id="location3" class="myInput"></p>
+
+    <p class="myP">Date: <input id="date" type="date" class="myInput"></p>
+
+    <p class="myP">
+      Estimated Price: $
+      <input id="estimatedPrice" class="myInput" readonly>
+    </p>
+
+    <input type="button" id="btn" value="CREATE" class="myButton"><br>
+    <div id="statusBox" class="myP"></div>
+  </div>
+
+  <div class="myDivWhite" style="text-align:center; margin-top:20px;">
+    <img src="photos/create-reservation.jpg"
+         alt="Create Photography Reservation"
+         style="width:400px; max-width:90%; border-radius:12px;">
+  </div>
+</body>
+</html>

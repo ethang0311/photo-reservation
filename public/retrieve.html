@@ -1,0 +1,85 @@
+<!-- retrieve.html -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>My Reservations</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <script>
+    async function lookup() {
+      resultBox.innerHTML = ""
+      const email = emailInput.value.trim()
+      if (!email) return
+
+      try {
+        const resp = await fetch(`/my/${encodeURIComponent(email)}`)
+        if (!resp.ok) {
+          resultBox.textContent = "Error loading reservations."
+          return
+        }
+
+        const data = await resp.json()
+        if (data.length === 0) {
+          resultBox.textContent = "No reservations found for that email."
+          return
+        }
+
+        data.forEach(r => {
+          const locations = [r.location1, r.location2, r.location3].filter(Boolean).join(", ")
+          resultBox.innerHTML += `
+            <div class="myP">
+              <b>Name:</b> ${r.name || ""}<br>
+              <b>Date:</b> ${r.date || ""}<br>
+              <b>Photos:</b> ${r.photoCount || ""}<br>
+              <b>Locations:</b> ${locations}<br>
+              <b>Price:</b> $${r.estimatedPrice || ""}<br>
+              <b>Phone:</b> ${r.phone || ""}<br>
+              <b>Email:</b> ${r.email || ""}
+            </div>
+            <hr>
+          `
+        })
+      } catch (err) {
+        console.error(err)
+        resultBox.textContent = "Error loading reservations."
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="myH1">My Reservations</h1>
+
+  <!-- NAV BUTTONS -->
+  <div class="myDivWhite" style="text-align:center;">
+    <a href="/">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Home</button>
+    </a>
+    <a href="create.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button>
+    </a>
+    <a href="retrieve.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button>
+    </a>
+    <a href="update.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button>
+    </a>
+    <a href="delete.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button>
+    </a>
+  </div>
+
+  <div class="myDivWhite">
+    <p class="myP">Email: <input id="emailInput" class="myInput"></p>
+    <input type="button" value="LOOK UP" class="myButton" onclick="lookup()">
+    <div id="resultBox" class="myP"></div>
+  </div>
+
+  <div class="myDivWhite" style="text-align:center; margin-top:20px;">
+    <img src="photos/my-reservations.jpg"
+         alt="My Reservations"
+         style="width:400px; max-width:90%; border-radius:12px;">
+  </div>
+</body>
+</html>

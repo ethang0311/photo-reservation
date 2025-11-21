@@ -1,0 +1,11 @@
+.myH1 {font-family: Arial, Helvetica, sans-serif; font-size: 28pt; color: white; background: black; text-align: center; padding: 15px;}
+.myH2 {font-family: Arial, Helvetica, sans-serif; font-size: 22pt; color: black; background: white; text-align: center; padding: 10px;}
+.myH3 {font-family: Arial, Helvetica, sans-serif; font-size: 16pt; color: black; text-align: center;}
+.myP {font-family: Arial, Helvetica, sans-serif; font-size: 12pt; color: black;}
+.myA {color: black; text-decoration: none;}
+.myA:hover {text-decoration: underline;}
+.myInput {font-family: Arial, Helvetica, sans-serif; font-size: 12pt; color: black; background: white; border: 1px solid black; border-radius: 4px; padding: 4px;}
+.myButton {font-family: Arial, Helvetica, sans-serif; font-size: 12pt; color: white; background: black; border: none; border-radius: 4px; padding: 8px 16px; cursor: pointer;}
+.myButton:hover {background: #333;}
+.myDivBlack {background: black; color: white; padding: 20px;}
+.myDivWhite {background: white; color: black; padding: 20px;}

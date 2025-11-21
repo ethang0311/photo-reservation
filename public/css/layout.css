@@ -1,0 +1,6 @@
+.main {display: flex; width: 100%; min-height: 100vh;}
+.menu {background: black; color: white; width: 50%; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+.meat {background: white; color: black; width: 50%; padding: 20px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;}
+.myCenter {text-align: center;}
+.myPad {padding: 10px;}
+.myBorder {border: 1px solid black; border-radius: 4px;}

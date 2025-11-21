@@ -1,0 +1,140 @@
+<!-- update.html -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Update Reservation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <script>
+    function calcPrice(count, locCount) {
+      let price = 0
+
+      if (count === 10) price = 100
+      else if (count === 25) price = 200
+      else if (count === 40) price = 275
+
+      if (locCount >= 2) price += 20
+      if (locCount === 3) price += 15
+
+      return price
+    }
+
+    async function updateNow() {
+      statusBox.textContent = ""
+
+      const email = emailInput.value.trim()
+      if (!email) {
+        statusBox.textContent = "Please enter your email."
+        return
+      }
+
+      const updates = {}
+
+      if (newDate.value) {
+        updates.date = newDate.value
+      }
+
+      let count = NaN
+      if (newPhotoCount.value) {
+        count = parseInt(newPhotoCount.value)
+        if (!isNaN(count)) {
+          updates.photoCount = count
+        }
+      }
+
+      if (newLocation1.value) updates.location1 = newLocation1.value.trim()
+      if (newLocation2.value) updates.location2 = newLocation2.value.trim()
+      if (newLocation3.value) updates.location3 = newLocation3.value.trim()
+
+      const locCount = [
+        updates.location1,
+        updates.location2,
+        updates.location3
+      ].filter(Boolean).length || 1
+
+      if (!isNaN(count)) {
+        updates.estimatedPrice = calcPrice(count, locCount)
+        updates.locationCount = locCount
+      }
+
+      if (Object.keys(updates).length === 0) {
+        statusBox.textContent = "Nothing to update."
+        return
+      }
+
+      try {
+        const resp = await fetch("/update-one", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, updates })
+        })
+
+        if (!resp.ok) {
+          const msg = await resp.text()
+          console.error(msg)
+          statusBox.textContent = "No reservation found for that email."
+          return
+        }
+
+        statusBox.textContent = "Reservation updated."
+      } catch (err) {
+        console.error(err)
+        statusBox.textContent = "Failed to update reservation."
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="myH1">Update Reservation</h1>
+
+  <!-- NAV BUTTONS -->
+  <div class="myDivWhite" style="text-align:center;">
+    <a href="/">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Home</button>
+    </a>
+    <a href="create.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button>
+    </a>
+    <a href="retrieve.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button>
+    </a>
+    <a href="update.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button>
+    </a>
+    <a href="delete.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button>
+    </a>
+  </div>
+
+  <div class="myDivWhite">
+    <p class="myP">Email (used to find your reservation): <input id="emailInput" class="myInput"></p>
+
+    <p class="myP">New Date: <input id="newDate" type="date" class="myInput"></p>
+
+    <p class="myP">
+      New Photo Count:
+      <select id="newPhotoCount" class="myInput">
+        <option value="">(leave as is)</option>
+        <option value="10">10 Photos ($100)</option>
+        <option value="25">25 Photos ($200)</option>
+        <option value="40">40 Photos ($275)</option>
+      </select>
+    </p>
+
+    <p class="myP">New Location 1: <input id="newLocation1" class="myInput"></p>
+    <p class="myP">New Location 2: <input id="newLocation2" class="myInput"></p>
+    <p class="myP">New Location 3: <input id="newLocation3" class="myInput"></p>
+
+    <input type="button" value="UPDATE" class="myButton" onclick="updateNow()">
+    <div id="statusBox" class="myP"></div>
+  </div>
+
+  <div class="myDivWhite" style="text-align:center; margin-top:20px;">
+    <img src="photos/update-reservation.jpg"
+         alt="Update Reservation"
+         style="width:400px; max-width:90%; border-radius:12px;">
+  </div>
+</body>
+</html>

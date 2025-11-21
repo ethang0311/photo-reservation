@@ -1,0 +1,76 @@
+<!-- delete.html -->
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Delete Reservation</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/layout.css">
+
+  <script>
+    async function removeReservation() {
+      statusBox.textContent = ""
+
+      const email = emailInput.value.trim()
+      if (!email) {
+        statusBox.textContent = "Please enter your email."
+        return
+      }
+
+      try {
+        const resp = await fetch("/delete-one", {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email })
+        })
+
+        if (!resp.ok) {
+          const msg = await resp.text()
+          console.error(msg)
+          statusBox.textContent = "No reservation found for that email."
+          return
+        }
+
+        statusBox.textContent = "Reservation deleted."
+      } catch (err) {
+        console.error(err)
+        statusBox.textContent = "Failed to delete reservation."
+      }
+    }
+  </script>
+</head>
+
+<body>
+  <h1 class="myH1">Delete Reservation</h1>
+
+  <!-- NAV BUTTONS -->
+  <div class="myDivWhite" style="text-align:center;">
+    <a href="/">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Home</button>
+    </a>
+    <a href="create.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button>
+    </a>
+    <a href="retrieve.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button>
+    </a>
+    <a href="update.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button>
+    </a>
+    <a href="delete.html">
+      <button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button>
+    </a>
+  </div>
+
+  <div class="myDivWhite">
+    <p class="myP">Email (used to find your reservation): <input id="emailInput" class="myInput"></p>
+    <input type="button" value="DELETE" class="myButton" onclick="removeReservation()">
+    <div id="statusBox" class="myP"></div>
+  </div>
+
+  <div class="myDivWhite" style="text-align:center; margin-top:20px;">
+    <img src="photos/delete-reservation.jpg"
+         alt="Delete Reservation"
+         style="width:400px; max-width:90%; border-radius:12px;">
+  </div>
+</body>
+</html>
