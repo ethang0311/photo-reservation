@@ -16,13 +16,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // === MONGO SETUP ===
-const uri = process.env.MONGODB_URI;      // from .env
-const DB_NAME = "photography";           // 👈 your DB name
-const COLLECTION_NAME = "res";           // 👈 your collection name
+const uri = process.env.MONGODB_URI;      // from Render environment
+const DB_NAME = "photography";           // your DB
+const COLLECTION_NAME = "res";           // your collection
 
 let client;
 let reservationsCollection;
 
+// STARTUP FUNCTION — server always starts even if MongoDB fails
 async function start() {
   try {
     client = new MongoClient(uri);
@@ -32,12 +33,16 @@ async function start() {
     reservationsCollection = db.collection(COLLECTION_NAME);
 
     console.log("Connected to MongoDB:", DB_NAME, "/", COLLECTION_NAME);
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (err) {
-    console.error("Error starting server:", err);
-    process.exit(1);
+    console.error("Error connecting to MongoDB:", err);
+    // 👇 This is the important part — we DO NOT exit
+    console.log("Starting server WITHOUT database connection...");
+  } finally {
+    // 👇 Server ALWAYS starts, even if DB is down
+    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   }
 }
+
 start();
 
 // optional health check
@@ -48,6 +53,10 @@ app.get("/api", (req, res) => res.send("API running"));
 // CREATE reservation
 app.post("/create", async (req, res) => {
   try {
+    if (!reservationsCollection) {
+      return res.status(500).send("Database not connected");
+    }
+
     console.log("CREATE body:", req.body);
     const result = await reservationsCollection.insertOne(req.body);
     res.status(201).json(result);
@@ -60,6 +69,10 @@ app.post("/create", async (req, res) => {
 // GET reservations for a given email
 app.get("/my/:email", async (req, res) => {
   try {
+    if (!reservationsCollection) {
+      return res.status(500).send("Database not connected");
+    }
+
     const email = req.params.email;
     console.log("MY for email:", email);
     const docs = await reservationsCollection.find({ email }).toArray();
@@ -73,6 +86,10 @@ app.get("/my/:email", async (req, res) => {
 // UPDATE first reservation for an email
 app.put("/update-one", async (req, res) => {
   try {
+    if (!reservationsCollection) {
+      return res.status(500).send("Database not connected");
+    }
+
     const { email, updates } = req.body;
     console.log("UPDATE for email:", email, "updates:", updates);
 
@@ -95,6 +112,10 @@ app.put("/update-one", async (req, res) => {
 // DELETE first reservation for an email
 app.delete("/delete-one", async (req, res) => {
   try {
+    if (!reservationsCollection) {
+      return res.status(500).send("Database not connected");
+    }
+
     const { email } = req.body;
     console.log("DELETE for email:", email);
 
