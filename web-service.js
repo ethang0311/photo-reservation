@@ -1,4 +1,3 @@
-// web-service.js
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
@@ -8,22 +7,18 @@ const path = require("path");
 const app = express();
 const PORT = process.env.PORT || 5555;
 
-// middleware
 app.use(cors());
 app.use(express.json());
 
-// serve static files from public/
 app.use(express.static(path.join(__dirname, "public")));
 
-// === MONGO SETUP ===
-const uri = process.env.MONGODB_URI;      // from Render environment
-const DB_NAME = "photography";           // your DB
-const COLLECTION_NAME = "res";           // your collection
+const uri = process.env.MONGODB_URI;      
+const DB_NAME = "photography";           
+const COLLECTION_NAME = "res";           
 
 let client;
 let reservationsCollection;
 
-// STARTUP FUNCTION — server always starts even if MongoDB fails
 async function start() {
   try {
     client = new MongoClient(uri);
@@ -35,22 +30,16 @@ async function start() {
     console.log("Connected to MongoDB:", DB_NAME, "/", COLLECTION_NAME);
   } catch (err) {
     console.error("Error connecting to MongoDB:", err);
-    // 👇 This is the important part — we DO NOT exit
     console.log("Starting server WITHOUT database connection...");
   } finally {
-    // 👇 Server ALWAYS starts, even if DB is down
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   }
 }
 
 start();
 
-// optional health check
 app.get("/api", (req, res) => res.send("API running"));
 
-// ==== ROUTES ====
-
-// CREATE reservation
 app.post("/create", async (req, res) => {
   try {
     if (!reservationsCollection) {
@@ -66,7 +55,6 @@ app.post("/create", async (req, res) => {
   }
 });
 
-// GET reservations for a given email
 app.get("/my/:email", async (req, res) => {
   try {
     if (!reservationsCollection) {
@@ -83,7 +71,6 @@ app.get("/my/:email", async (req, res) => {
   }
 });
 
-// UPDATE first reservation for an email
 app.put("/update-one", async (req, res) => {
   try {
     if (!reservationsCollection) {
@@ -109,7 +96,6 @@ app.put("/update-one", async (req, res) => {
   }
 });
 
-// DELETE first reservation for an email
 app.delete("/delete-one", async (req, res) => {
   try {
     if (!reservationsCollection) {
@@ -132,7 +118,6 @@ app.delete("/delete-one", async (req, res) => {
   }
 });
 
-// cleanup
 process.on("SIGINT", async () => {
   console.log("Shutting down...");
   if (client) await client.close();
