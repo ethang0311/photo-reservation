@@ -34,6 +34,10 @@
         updates.date = newDate.value
       }
 
+      if (newTime.value) {
+        updates.time = newTime.value   // <<------ NEW
+      }
+
       let count = NaN
       if (newPhotoCount.value) {
         count = parseInt(newPhotoCount.value)
@@ -89,27 +93,18 @@
   <h1 class="myH1">Update Reservation</h1>
 
   <div class="myDivWhite" style="text-align:center;">
-    <a href="/">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Home</button>
-    </a>
-    <a href="create.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button>
-    </a>
-    <a href="retrieve.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button>
-    </a>
-    <a href="update.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button>
-    </a>
-    <a href="delete.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button>
-    </a>
+    <a href="/"><button class="myButton" style="margin:5px; padding:10px 20px;">Home</button></a>
+    <a href="create.html"><button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button></a>
+    <a href="retrieve.html"><button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button></a>
+    <a href="update.html"><button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button></a>
+    <a href="delete.html"><button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button></a>
   </div>
 
   <div class="myDivWhite">
     <p class="myP">Email (used to find your reservation): <input id="emailInput" class="myInput"></p>
 
     <p class="myP">New Date: <input id="newDate" type="date" class="myInput"></p>
+    <p class="myP">New Time: <input id="newTime" type="time" class="myInput"></p>
 
     <p class="myP">
       New Photo Count:

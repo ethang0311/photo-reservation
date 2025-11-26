@@ -59,6 +59,7 @@
         location2     : location2.value.trim(),
         location3     : location3.value.trim(),
         date          : date.value,
+        time          : time.value,      // <<------ NEW
         estimatedPrice: parseFloat(estimatedPrice.value)
       }
 
@@ -87,21 +88,11 @@
   <h1 class="myH1">Create Photography Reservation</h1>
 
   <div class="myDivWhite" style="text-align:center;">
-    <a href="/">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Home</button>
-    </a>
-    <a href="create.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button>
-    </a>
-    <a href="retrieve.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button>
-    </a>
-    <a href="update.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button>
-    </a>
-    <a href="delete.html">
-      <button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button>
-    </a>
+    <a href="/"><button class="myButton" style="margin:5px; padding:10px 20px;">Home</button></a>
+    <a href="create.html"><button class="myButton" style="margin:5px; padding:10px 20px;">Create Reservation</button></a>
+    <a href="retrieve.html"><button class="myButton" style="margin:5px; padding:10px 20px;">My Reservations</button></a>
+    <a href="update.html"><button class="myButton" style="margin:5px; padding:10px 20px;">Update Reservation</button></a>
+    <a href="delete.html"><button class="myButton" style="margin:5px; padding:10px 20px;">Delete Reservation</button></a>
   </div>
 
   <div class="myDivWhite">
@@ -132,6 +123,7 @@
     <p class="myP">Location 3: <input id="location3" class="myInput"></p>
 
     <p class="myP">Date: <input id="date" type="date" class="myInput"></p>
+    <p class="myP">Time: <input id="time" type="time" class="myInput"></p> <!-- NEW -->
 
     <p class="myP">
       Estimated Price: $
